@@ -9,11 +9,7 @@ export const createUser = (user) => {
     return newUser;
 };
 
-export const findAllUsers = (req, res) => {
-    const users = dao.findAllUsers();
-    res.json(users);
-};
-
+export const findAllUsers = () => users;
 
 export const findUserById = (userId) => users.find((user) => user._id === userId);
 

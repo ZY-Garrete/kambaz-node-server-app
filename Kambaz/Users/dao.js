@@ -9,7 +9,11 @@ export const createUser = (user) => {
     return newUser;
 };
 
-export const findAllUsers = () => users;
+export const findAllUsers = (req, res) => {
+    const users = dao.findAllUsers();
+    res.json(users);
+};
+
 
 export const findUserById = (userId) => users.find((user) => user._id === userId);
 
@@ -21,4 +25,3 @@ export const findUserByCredentials = (username, password) =>
 export const updateUser = (userId, user) => (users = users.map((u) => (u._id === userId ? user : u)));
 
 export const deleteUser = (userId) => (users = users.filter((u) => u._id !== userId));
-

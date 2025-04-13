@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from 'express'
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
@@ -9,6 +10,20 @@ import session from "express-session";
 import "dotenv/config";
 import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
 import EnrollmentRoutes from './Kambaz/Enrollments/routes.js';
+import mongoose from 'mongoose';
+const CONNECTION_STRING =
+    process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
+
+mongoose.connect(CONNECTION_STRING)
+    .then(() => {
+        if (CONNECTION_STRING.startsWith("mongodb+srv://")) {
+            console.log("✅ Connected to MongoDB Atlas 🌍");
+        } else {
+            console.log("✅ Connected to local MongoDB 🖥️");
+        }
+    })
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
+
 const app = express()
 app.use(cors(
     {

@@ -1,3 +1,4 @@
+// Kambaz/Users/schema.js
 import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     _id: String,
@@ -20,3 +21,4 @@ const userSchema = new mongoose.Schema({
     { collection: "users" }
 );
 export default userSchema;
+

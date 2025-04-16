@@ -1,32 +1,33 @@
-import Database from "../Database/index.js";
-import { v4 as uuidv4 } from "uuid";
-
+//kambaz/Courses/dao.js
+import model from "./model.js";
+import enrollmentModel from "../Enrollments/model.js";
 export function findAllCourses() {
-    return Database.courses;
+    return model.find();
 }
-export function findCoursesForEnrolledUser(userId) {
-    const { courses, enrollments } = Database;
-    const enrolledCourses = courses.filter((course) =>
-        enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id));
-    return enrolledCourses;
+export async function findCoursesForEnrolledUser(userId) {
+    // 从 enrollments 集合中查找该用户的所有报名
+    const enrollments = await enrollmentModel.find({ user: userId });
+
+    // 获取这些报名对应的课程 ID
+    const courseIds = enrollments.map(enrollment => enrollment.course);
+
+    // 查找这些 ID 对应的课程
+    return await model.find({ _id: { $in: courseIds } });
 }
 
 export function createCourse(course) {
-    const newCourse = { ...course, _id: uuidv4() };
-    Database.courses = [...Database.courses, newCourse];
-    return newCourse;
+    console.log("🛠️ Creating course with data:", course);
+    if (!course._id) {
+        course._id = new Date().getTime().toString();
+        console.log("✅ Assigned _id:", course._id);
+    }
+    return model.create(course);
 }
+
+
 export function deleteCourse(courseId) {
-    const { courses, enrollments } = Database;
-    Database.courses = courses.filter((course) => course._id !== courseId);
-    Database.enrollments = enrollments.filter(
-        (enrollment) => enrollment.course !== courseId
-    );
-    return { status: 204 };
+    return model.deleteOne({ _id: courseId });
 }
 export function updateCourse(courseId, courseUpdates) {
-    const { courses } = Database;
-    const course = courses.find((course) => course._id === courseId);
-    Object.assign(course, courseUpdates);
-    return course;
+    return model.updateOne({ _id: courseId }, { $set: courseUpdates });
 }
